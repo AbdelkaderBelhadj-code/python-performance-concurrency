@@ -53,11 +53,14 @@ statistically (here, the C++ latency samples).
 
 ```mermaid
 flowchart LR
-    M["main.py"]
-    M --> PY["1 · py_pipeline.py<br/>same pipeline in Python<br/>threads + queue.Queue"]
-    M --> GIL["2 · gil_demo.py<br/>threads vs processes<br/>CPU-bound vs I/O-bound"]
-    M --> VEC["3 · vectorization.py<br/>loops vs NumPy<br/>O(n·w) vs O(n)"]
-    M --> AN["4 · latency_analysis.py<br/>percentiles · bootstrap CI<br/>warm-up · log histograms"]
+    subgraph demos["python main.py runs four demos"]
+        direction TB
+        PY["1 · py_pipeline.py<br/>same pipeline in Python<br/>threads + queue.Queue"]
+        GIL["2 · gil_demo.py<br/>threads vs processes<br/>CPU-bound vs I/O-bound"]
+        VEC["3 · vectorization.py<br/>loops vs NumPy<br/>O(n·w) vs O(n)"]
+        AN["4 · latency_analysis.py<br/>percentiles · bootstrap CI<br/>warm-up · log histograms"]
+        PY ~~~ GIL ~~~ VEC ~~~ AN
+    end
     CSV[("data/latencies_cpp.csv<br/>from the C++ pipeline")] --> AN
     PY -- Python samples --> AN
     AN --> OUT["Final comparison<br/>C++ vs Python"]
